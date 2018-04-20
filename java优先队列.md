@@ -1,3 +1,10 @@
+---
+title: Java优先队列 PiorityOueue
+author: Kairou Zeng
+tags:
+    - java,优先队列
+---
+
 ### Java优先队列 PiorityOueue
 
 `PriorityQueue`是个基于优先级堆的极大优先级队列,PriorityQueue的排序不是普通的排序，而是堆排序。

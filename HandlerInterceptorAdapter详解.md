@@ -1,3 +1,11 @@
+---
+title: 拦截器HandlerInterceptorAdapter的使用
+author: Kairou Zeng
+tags:
+    - HandlerInterceptorAdapter
+    - Spring
+---
+
 ### 拦截器 - HandlerInterceptorAdapter的使用
 
 > Spring为我们提供了**org.springframework.web.servlet.handler.HandlerInterceptorAdapter** 这个适配器，继承此类，可以实现自己的拦截器

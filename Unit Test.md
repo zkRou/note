@@ -1,7 +1,14 @@
-## Unit Test
+---
+title: 单元测试
+author: Kairou Zeng
+date: 2018-04-16
+tags: 单元测试
+---
+
+# Unit Test
 
 ----
-### Mockito
+## Mockito
 
 - 什么是`mock测试`?什么是`mock对象`?
 
@@ -11,7 +18,7 @@
 - BDDMockito
 
 ----
-### MockMvc
+## MockMvc
 
 `MockMvc`实现了对Http请求的模拟，能够直接使用网络的形式，转换到Controller的调用。
 
@@ -42,7 +49,7 @@ andExpect方法中的Matcher可以使用`MockMvcResultMatchers`来进行构建,�
 Mockito通过方法when()、thenReturn()等方法可以对方法进行打桩，让后续方法按照自己的数据桩来返回，达到了隔离依赖的效果。
 
 ----
-### Spring Boot Test
+## Spring Boot Test
 
 Spring Boot中引入单元测试很简单，依赖如下：
 ```maven
@@ -66,7 +73,7 @@ Spring Boot中引入单元测试很简单，依赖如下：
 - JSONassert - JSON断言库
 - JsonPath - 用于Json的XPath
 
-#### Controller(API)单元测试
+### Controller(API)单元测试
 
 使用`MockMvc`，就可以不必启动工程就能测试这些接口。
 
@@ -74,7 +81,7 @@ Spring Boot中引入单元测试很简单，依赖如下：
 
 (感觉对Controller的单元测试就像使用Postman进行的接口测试)
 
-#### Testing Spring Boot applications
+### Testing Spring Boot applications
 
 - Spring Boot Test 常用注解
 
@@ -114,7 +121,7 @@ Spring Boot中引入单元测试很简单，依赖如下：
 
     开启事务，回滚测试方法对数据库的改变
 
-#### Detecting test configuration
+### Detecting test configuration
 
 如果您熟悉Spring Test Framework,那么您可能习惯于使用`@ContextConfiguration(classes=...)`来指定`@Configuration`要加载哪个Spring。
 
@@ -124,7 +131,7 @@ Spring Boot中引入单元测试很简单，依赖如下：
 
 如果你想定制主配置，可以使用`@TestConfiguration`类。与`@Configuration`将使用嵌套类而不是应用程序的主配置不同，`@TestConfiguration`除了应用程序的主配置之外，还将使用嵌套类。
 
-#### Working with random ports
+### Working with random ports
 
 如果你需要启动完整的运行服务器进行测试，我们建议您使用随机端口。
 
@@ -132,10 +139,16 @@ Spring Boot中引入单元测试很简单，依赖如下：
 
 `@LocalServerPort`注解，获取测试时动态的端口号。为了方便起见，各可以`@Autowire`注解一个`TestRestTemplate`，将解析到正在运行的服务器。
 
-#### Mocking and spying 
+### Mocking and spying 
 
 `@MockBean`,可为`ApplicationContext`内部的Bean定义Mockito Mock。
 
-#### Auto-configured tests
+### Auto-configured tests
 
 `spring-boot-test-autoconfigure`模块包含许多可用于自动配置.
+
+----
+
+## 打桩
+
+

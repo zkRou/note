@@ -136,6 +136,60 @@
    (1). 可以使用application-{profile}.yml/.properties的方式
    (2). 在YAML文件中可以把所有Profile的配置属性都放在一个application.yml文件里。使用一组三个连字符(---)作为分隔符。未指定spring.profiles，则这里的属性对全部Profile都生效，或者对那些未设置该属性的激活Profile生效。
    
+## 第四章 测试
+
+测试是一道保障，确认应用程序在改进的同时不会破坏已有的东西。
+
+Spring的`SpringJUnit4ClssRunner`，这是一个JUnit类运行器，可以在基于JUnit的应用程序测试里加载Spring应用程序上下文，并未测试类自动织入所需的Bean。
+
+- 集成测试
+- 在服务器里测试y应用程序
+- Spring Boot的测试辅助工具
+
+1. 集成测试自动配置
+
+   `@RunWith(SpringJUnit4ClassRunner.class)`开启了Spring集成测试支持
+
+2. 测试Web应用程序
+
+   要恰当地测试一个Web应用程序，你需要投入一些实际的HTTP请求，确认它能正确地处理那些请求。Spring Boot开发者有两个可选的方案能实现这类测试：
+
+   - `Spring Mock MVC`:能在一个近似真实的模拟Servlet容器里测试控制器，而不用实际启动应用服务器。
+
+     要在测试里面设置Mock MVC，可以使用`MockMvcBuilders`，该类提供了两个静态方法。
+
+     - standaloneSetup()：构建一个Mock MVC,提供一个或多个手工创建并配置的控制器。
+     - webAppContextSetup()：使用Spring应用程序上下文来构建Mock MVC，该上下文里可以包含一个或多个配置好的控制器。
+       
+       webAppContextSetup()接受一个WebApplicationContext参数。因此，我们需要为测试类加上@WebAppConfiguration注解(开启web上下文测试)，使用@Autowired将WebApplicationContext作为实例变量注入测试类。
+
+    ```java
+    @SpringApplicationConfiguration(classes=ReadingListApplication.class)
+    @WebAppConfiguration
+    public class MockMvcWebTest{
+
+      @Autowired
+      private WebApplicationContext webContext;
+
+      private MockMvc mockMvc;
+
+      //将WebApplicationContext注入webAppContextSetup()方法，然后调用build()产生了一个MockMvc实例，该实例赋给了一个实例变量，供测试方法使用
+      @Before
+      public void setupMockMvc(){
+          mockMvc = MockMvcBuilders           //设置MockMvc
+              .webAppContextSetup(webContext)
+              .build();
+      }
+    }
+    ```
+
+   - `Web集成测试`:在嵌入式Servlet容器(比如Tomcat或Jettty)里启动应用程序，在真正的应用服务器里执行测试
+
+## 第五章 Groovy与Spring Boot CLI
+
+- 自动依赖与import
+- 获取依赖
+- 测试基于CLI的应用程序
 
 
 

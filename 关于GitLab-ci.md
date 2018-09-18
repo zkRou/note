@@ -29,7 +29,7 @@ tags: [git, 持续集成]
 
 - GitLab  Runner 
 
-    `GitLab Runner`是`.gitlab-ci.yml`脚本的运行器。`GitLab Runner`不需要和`GitLab`安装在同一台机器上，但是考虑到`GitLab Runner`的资源消耗问题和安全问题， 也不建议这两者安装在同一台机器上。
+    `GitLab Runner`是`.gitlab-ci.yml`脚本的运行器。`GitLab Runner`不需要和`GitLab`安装在同一台机器上，但是考虑到`GitLab Runner`的资源消耗问题和安全问题， 也不建议这两者安装在同一台机器上。GitLab和Runners通过API通信，所以唯一的要求就是运行Runners的机器可以联网。
 
     `GitLab Runner`分为两种：
 

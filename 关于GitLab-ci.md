@@ -39,5 +39,60 @@ tags: [git, 持续集成]
 
 - Pipelines
 
-    `Pipelines`是定义于`.gitlab-ci.yml`中的不同阶段的不同任务。每个`Pipelines`包含有多个`Stages`,每个`Stages`包含有一个火多个`jobs`。每一次Merge Request或push都要经过流水线之后才可以合格出厂。而`.gitlab-ci.yml`正是定义了`Pipelines`有哪些`Stages`，每个`Stages`要做什么事。
+    `Pipelines`是定义于`.gitlab-ci.yml`中的不同阶段的不同任务。一次 Pipeline 其实相当于一次构建任务，里面可以包含多个流程，如安装依赖、运行测试、编译、部署测试服务器、部署生产服务器等流程。每个`Pipelines`包含有多个`Stages`,每个`Stages`包含有一个或多个`jobs`。每一次Merge Request或push都要经过流水线之后才可以合格出厂。而`.gitlab-ci.yml`正是定义了`Pipelines`有哪些`Stages`，每个`Stages`要做什么事。
+
+- Stages
+
+    `Stages`表示构建阶段，可以在一次`Pipelines`中定义多个`Stages`.默认`Pipelines`有三个`Stages`：`build`、`test`、`deploy`
+
+    - 所有`Stages`会按照顺序运行，即当一个 Stage 完成后，下一个 Stage 才会开始；
+
+    - 只有当所有`Stages`完成后，该构建任务`(Pipeline)`才会成功
+
+    - 如果任何一个`Stages`失败，那么后面的`Stages`不会执行，该构建任务`(Pipeline)`失败
+
+- Jobs
+
+    `Jobs`表示构建工作，表示某个`Stage`里面执行的工作。
+
+    | 关键字 | 是否必须 | 描述 |
+    | --- | --- | --- |
+    | script | 是 | 定义`Runner`需要执行的脚本或命令 |
+    | extends | 否 | 定义此 job 将继承的配置条目 |
+    | image | 否 | 需要使用的docker镜像 | 
+    | services | 否 | 定义了所需的docker服务 | 
+    | stage | 否 | 定义了`Job`的阶段，默认是`test` |
+    | type | 否 | `stage`的别名，不赞成使用 | 
+    | vaiables | 否 | 在`job`级别上定义的变量 | 
+    | only | 否 | 定义那些git分支适合该`job` |
+    | except | 否 | 定义了哪些git分支不适合该`job` |
+    | tages | 否 | 定义了哪些runner适合该job(runner在创建时会要求用户输入标签名来代表该runner) |
+    | allow_failure | 否 | 允许任务失败，但是如果失败，将不会改变提交状态 |
+    | when | 否 | 定义`job`什么时候能被执行，可以是`on_success`,`on_failure`,`always`或者`manual` |
+    | dependencies | 否 | 定义了该`job`依赖哪一个`job`，如果设置该项，你可以通过artifacts设置 |
+    | arfifacts | 否 | |
+    | cache | 否 | 定义需要被缓存的文件、文件夹列表 |
+    | before_script | 否 | 覆盖在根元素上定义的`before_script` |
+    | after_script | 否 | 覆盖在根元素上定义的`after_script` | 
+    | environment | 否 | 定义让job完成部署的环境名称 |
+    | coverage| 否 | 定义代码覆盖率设置 | 
+    | retry | 否 | 定义`job`失败后的自动充重试次数 |
+
+    - script
+
+        `script`是一段由`Runner`执行的shell脚本，例如：
+
+        ```YAML
+        job:
+            script: "bundle exec rspec"
+        ```
+
+        这个参数也可以使用数组包含几条命令：
+
+        ```YAML
+        job:
+            script:
+                - uname -a
+                - bundle exec rspec
+        ```
 

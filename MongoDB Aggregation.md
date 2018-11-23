@@ -31,3 +31,21 @@ MongoDB提供了三种聚合方法:
 
     MongoDB也提供`db.collection.estimatedDocumentCount()`、`db.collection.count()`、`db.collection.distinct()`
 
+## Aggregation pipeline
+
+> 聚合管道是基于数据处理管道概念建模的数据聚合框架。文档进入一个多级管道，该管道将文档转换为聚合结果。聚合管道提供了map-reduce的替代方案，并且可能是聚合任务的首选解决方案。聚合通道对值类型和结果大小有限制。
+
+### Pipline 
+
+聚合管道由多个阶段组成。每个阶段在文档通过管道时转换他们。
+
+MongoDB在shell中提供了`db.collection.aggregate()`方法和用于聚合管道的聚合命令。
+
+聚合管道的例子：
+
+1. [Aggregation with User Preference Data](https://docs.mongodb.com/manual/tutorial/aggregation-with-user-preference-data/)
+2. [Aggregation with the Zip Code Data Set](https://docs.mongodb.com/manual/tutorial/aggregation-zip-code-data-set/)
+
+### Pipeline Expressions
+
+在$group阶段中使用的累加器，在通过管道的文档过程中维护它们的状态(例如总数、最大值、最小值和相关数据)。

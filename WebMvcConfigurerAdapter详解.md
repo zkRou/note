@@ -1,3 +1,10 @@
+---
+title: WebMvcConfigurerAdapter
+author: Kairou Zeng
+date: 2018/04/14
+tags: [web]
+---
+
 ### WebMvcConfigurerAdapter
 
 > WebMvcConfigurerAdapter是WebMvcCongifurer接口的实现。因其是WebMvcConfigurer接口的实现，所以WebMvcConfigurer的API方法也可以用来配置MVC。只是实现这个接口的话，要实现所有的方法。Spring API中对该类的描述如下：

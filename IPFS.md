@@ -2,7 +2,6 @@
 title: IPFS
 author: Kairou Zeng
 date: 2018/11/29
-tags: []
 ---
 
 ## 什么是IPFS

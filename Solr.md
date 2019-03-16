@@ -1,3 +1,9 @@
+---
+title: Solr
+author: Kairou Zeng
+date: 2018/05/01
+---
+
 #### 概述
 
 Lucene是一个Java语言编写的利用倒排原理实现的文本检索类库。
@@ -7,10 +13,6 @@ Solr是Lucene为基础实现的文本检索应用服务。
 Solr的部署方式有单机方式、多级Master-Slaver方式、Cloud方式。
 
 SolrCloud是基于Solr和Zookeeper的分布式搜索方案，它的主要思想是使用Zookeeper作为SolrCloud集群的配置信息中心。当索引越来越大，一个单一的系统无法满足磁盘需求，查询速度缓慢，此时就需要分布式索引。在分布式索引中，原来的大索引，将会分成多个小索引，solr可以将这些小索引返回的结果合并，然后返回给客户端。
-
-
-
-
 
 #### Solr7.1.0 + Tomcat单机部署(Windows)
 
@@ -34,8 +36,6 @@ SolrCloud是基于Solr和Zookeeper的分布式搜索方案，它的主要思想�
   **坑** ：Solr7.1.0和Tomcat7不兼容，配置会失败
 
   相关链接：[solr在tomcat的部署](http://wowubuntu.com/markdown/basic.html)
-
-
 
 #### SolrCloud特点功能：
 

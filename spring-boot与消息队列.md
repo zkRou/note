@@ -1,3 +1,8 @@
+---
+title: 消息队列
+author: Kairou Zeng
+date: 2018/04/15
+---
 ### 消息队列
 
 > 消息队列使用消息将应用连接起来。这些消息通过像Rabbitmq这样的消息代理服务器在应用程序之间路由。   — 《Rabbitmq in action》

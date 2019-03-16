@@ -1,3 +1,9 @@
+---
+title: 共享Session
+author: Krirou Zeng
+date: 2017/09/01
+---
+
 #### 可用框架
 
 spring session
@@ -6,8 +12,6 @@ kisso
 
 spring security
 
-
-
 #### 共享Session问题
 
 HttpSession是通过Servlet容器创建和管理的，像Tomcat/Jetty都是保存在内存中的。
@@ -15,7 +19,6 @@ HttpSession是通过Servlet容器创建和管理的，像Tomcat/Jetty都是保�
 如果把web服务器搭建成分布式的集群，然后利用LVS和Nginx做负载均衡，那么来自同一用户的Http请求将有可能会被分到两个不同的web站点中。
 
 如何保证不同的web站点能够共享一份Session数据？
-
 
 
 #### Spring Session

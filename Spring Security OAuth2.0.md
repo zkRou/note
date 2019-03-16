@@ -1,7 +1,7 @@
 ---
 title: Spring Security OAuth2.0
 author: Kairou Zeng
-date: 2018-08-23
+date: 2018/08/23
 tags: [OAuth2.0,SSO]
 ---
 

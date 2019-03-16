@@ -1,3 +1,8 @@
+---
+title: ThreadLocal详解
+author: Kairou Zeng
+date: 2018/04/15
+---
 ### ThreadLocal详解
 
 > ThreadLocal位于java.lang.ThreadLocal.

@@ -1,3 +1,8 @@
+---
+title: Spring Data JPA
+author: Kairou Zeng
+date: 2018/05/01
+---
 # Spring Data JPA
 
 > 是Spring基于Hibernate开发的一个JPA框架。

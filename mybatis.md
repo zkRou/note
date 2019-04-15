@@ -55,6 +55,133 @@ Mybatis是一个持久层框架(ORM)，它支持定制化SQL、存储过程以�
 </dependency>
 ```
 
+## 基于注解
+
+## 基于XML
+
+> 使用注解来映射会使代码显得更加简洁，然而对于稍微复杂一点的语句，Java注解就力不从心了，并且会显得更加混乱。因此，如果你需要完成很复杂的事情，那么最好使用XML来映射语句。
+
+### 动态SQL
+
+#### if
+
+```xml
+<select id="findUsersWithNicknameLike" resultType="User">
+  SELECT * FROM USER WHERE deleted = 'false'
+  <if test="nickname!=null">
+    AND nickname like #{nickname}
+  </if>
+</select>
+```
+
+#### choose, when, otherwise
+
+choose类似于Java中的switch语句。当第一个when满足时，就只执行第一个when中的条件；当when中的条件都不满足时，就会执行默认的，也就是otherwise的语句。
+
+```xml
+<select id="findActiveBlogLike" resultType="Blog">
+  SELECT * FROM blog WHERE state = 'ACTIVE'
+  <choose>
+    <when test="title != null">
+      AND title like #{title}
+    </when>
+    <when test="author != null and author.name != null">
+      AND authro_name like #{author.name}
+    </when>
+    <otherwise>
+      AND featured = 1
+    </otherwise>
+  </choose>
+```
+
+#### trim, where, set
+
+- where
+
+```xml
+<select id="findActiveBlogLike" resultType="Blog">
+  SELECT * FROM BLOG
+  <where>
+    <if test="state != null">
+      state = #{state}
+    </if>
+    <if test="title != null">
+      AND title like #{title}
+    </if>
+    <if test="author != null and author.name != null">
+      AND author_name like #{author.name}
+    </if>
+  </where>
+</select>
+```
+
+`where`元素只会在至少有一个子元素的条件返回SQL子句的情况下才去插入"WHERE"子句。而且，若语句的开头为"AND"或"OR",where元素也会将它们去除。
+
+- trim
+
+`trim`有四个属性：prefix、prefixOverrides、suffix、suffixOverrides，四个属性的作用位置依次是：prefix、prefixOverrides、suffixO
+
+  prefix：前缀，增加一些指定的内容
+  prefixOverrides：前缀重写，删除指定的内容
+  suffix：后缀，增加一些指定的内容
+  suffixOverrides：后缀重写，删除指定的内容
+
+**示例一**
+
+```xml
+select * from user
+<trim prefix="where" prefixOverrides=" and | or ">
+  <if test=" name!=null name.length()>0 ">
+    and name=#{name}
+  </if>
+  <if test=" gender!=null and gender.length()>0 ">
+    and gender=#{gender}
+  </if>
+</trim>
+```
+
+>prefix：在前面增加where
+ prefixOverrides：删除第一个and或者or
+
+假设name和gender的值都不为null的话打印的SQL为：
+```sql
+select * from user where name ='xx' and gender = 'xx'
+```
+
+**示例二**
+
+```xml
+update user
+<trim prefix="set" suffixOverrides="," suffix=" where id=#{id} ">
+  <if test=" name!=null and name.length>0 ">
+    name=#{name},
+  </if>
+  <if test=" gender!=null and gender.length()>0 ">
+    gender=#{gender},
+  </if>
+</trim>
+```
+
+> prefix：在前端增加set
+  suffixOverrides：删除最后一个逗号
+  suffix：在最后增加where id = #{id}
+
+假如说name和gender的值都不为null的话打印SQL为：
+```sql
+update user set name='xx',gender='xx' where id='xx'
+```
+
+- set
+
+```xml
+<update id="updateAuthorIfNecessary">
+  update author
+    <set>
+      <if test="username!=null">username=#{username},</if>
+      <if test="">
+```
+
+
 ## 相关链接
 
 [Mybatis文档](http://www.mybatis.org/mybatis-3/) - 官方文档写的也是很简陋了

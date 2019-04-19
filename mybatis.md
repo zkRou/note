@@ -13,7 +13,17 @@ tags: [ORM, Mybatis]
 
 Mybatis是一个持久层框架(ORM)，它支持定制化SQL、存储过程以及高级映射。`Mybatis`避免了几乎所有的JDBC代码和手动设置参数以及获取结果集。`Mybatis`可以使用简单的XML或注解来配置和映射原声信息，将接口和Java的POJOs(Plain Old Java Objects,普通的Java对象)映射成数据库中的记录。
 
-## 使用 & 依赖
+## springboot下使用mybatis
+
+引入`MyBatis-Spring-Boot-Starter`模块后，将自动提供以下功能：
+1. 自动检测现有的数据源。springboot会自动加载spring.datasource.*的相关配置，数据源会自动注入到`SqlSessionFactory`中，`SqlSessionFactory`会自动注入到`Mapper`中。
+2. 将创建并注册一个`SqlSessionFactory`的实例，使用`SqlSessionFactoryBean`作为输入传递该`DataSource`。
+3. 将创建并注册`SqlSessionFactory`的`SqlSessionTemplate`实例。
+4. 自动扫描`Mapper`，将它们连接到`SqlSessionTemplate`并将它们注册到Spring上下文，以便将它们注入到bean中。
+
+> 就是说，使用了该Starter之后，只需要定义一个DataSource即可，它会自动创建使用该DataSource的SqlSessionFactoryBean以及SqlSessionTemplate，会自动扫描你的Mappers，连接到SqlSessionTemplate，并注册到Spring上下文中。
+
+## 依赖
 
 ### Mybatis
 
@@ -55,11 +65,120 @@ Mybatis是一个持久层框架(ORM)，它支持定制化SQL、存储过程以�
 </dependency>
 ```
 
-## 基于注解
+## 注解
 
-## 基于XML
+- @Mapper：Marker interface for MyBatis mappers 
+
+```Java
+@Mapper
+public interface StudentMapper {
+
+    List<StudentPO> findAll();
+
+    List<StudentClazzVO> findAllWithClazz();
+}
+```
+
+- @MapperScan：Use this annotation to register MyBatis mapper interfaces when using Java Config.
+
+
+指定扫描Mapper类的包的路径。
+```Java
+@SpringBootApplication
+@MapperScan(basePackages = "com.kris.springbootmybatisxmldemo.mapper")
+public class SpringbootMybatisXmlDemoApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringbootMybatisXmlDemoApplication.class, args);
+	}
+
+}
+```
+
+## 配置
+
+ MyBatis-Spring-Boot的应用配置参数也存储在`application.properties`或`application.yml`中。
+
+ 以下Mybatis配置均使用`mybatis`前缀。具体配置源码可见`org.mybatis.spring.boot.autoconfigure.MybatisProperties`
+ | property | description |
+ | --- | --- | 
+ | config-location | mybatis的主配置文件(mybatis-config.xml)所在位置 |
+ | check-config-location | 指示是否对MyBatis xml配置文件执行状态检查。 |
+ | mapper-locations | mapper xml配置文件所在位置 |
+ | type-aliases-package | 指定bean在哪个包里 |
+ | type-aliases-super-type | typeAliasesPackage设置的是个很大的范围，不是具体的entity所在的包，里面有许多entity之外的东西。如果配置了typeAliasesSuperType(例如XX.BaseEntity)，就只扫描所有继承了BaseEntity的类 |
+ | type-handlers-package | 扫描typeHandlers的包 |
+ | executor-type | MyBatis执行器：ExecutorType.SIMPLE-默认执行器，这个类型不做特殊的事情，它只为每个语句创建一个PreparedStatement；ExecutorType.REUSE-这种类型将重复使用PreparedStatement；ExecutorType.BATCH-这个类型批量更新 |
+ | configuration-properties | MyBatis配置的外部化属性。 指定的属性可以用作MyBatis配置文件和Mapper文件的占位符。 |
+ | configuration | 一个MyBatis配置bean。 关于可用的属性，请参阅[MyBatis参考页面](http://www.mybatis.org/mybatis-3/configuration.html#settings)。 注意此属性不能与配置位置（config-location）同时使用。 |
+
+
+## 基于注解使用
+
+### 注解
+
+- @Select
+- @Result：修饰返回结果集，关联实体类属性和数据库字段一一对应，如果实体类属性和数据库属性名保持一致，就不需要这个属性来修饰
+- @Insert
+- @update
+- @Delete
+
+## 基于XML使用
 
 > 使用注解来映射会使代码显得更加简洁，然而对于稍微复杂一点的语句，Java注解就力不从心了，并且会显得更加混乱。因此，如果你需要完成很复杂的事情，那么最好使用XML来映射语句。
+
+### 标签
+
+- mapper
+
+  namespace属性用于与业务中的mapper关联。
+  select中的id属性用来与业务中mapper的方法进行关联，查询到结果就会返回给该方法。
+  `#{}`是占位符，表示需要动态获取的数据。
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kris.springbootmybatisxmldemo.mapper.ClazzMapper">
+
+    <select id="findAll" resultType="com.kris.springbootmybatisxmldemo.entity.po.ClazzPO">
+        select * from t_clazz;
+    </select>
+</mapper>
+```
+
+- sql 
+
+  >重复SQL预计永远不可避免，<sql>标签就是用来解决这个问题的。
+
+  ```xml
+  <sql id="sql1">id,name,age,gender</sql>
+
+  <select id="getPerson" parameterType="int" resultType="Person">
+    select
+    <include refid="sql1"></include>
+    from Person where id=#{id}
+  </select>
+  ```
+
+  \<sql>：定义重复代码，id-sql代码块名称
+  \<include>：引用sql，refid-需要应用sql代码块的id
+
+  ```xml
+  <sql id="studentSql">
+      ${alias}.id as id,
+      ${alias}.name as name,
+      ${alias}.gender as gender,
+      ${alias}.age as age,
+      ${alias}.clazz_id as clazzId
+  </sql>
+
+  <select id="findAll" resultType="com.kris.springbootmybatisxmldemo.entity.po.StudentPO">
+      select
+      <include refid="studentSql">
+          <property name="alias" value="t" />
+      </include>
+      from t_student t;
+  </select>
+  ```
 
 ### 动态SQL
 
@@ -119,7 +238,7 @@ choose类似于Java中的switch语句。当第一个when满足时，就只执行
 
 - trim
 
-`trim`有四个属性：prefix、prefixOverrides、suffix、suffixOverrides，四个属性的作用位置依次是：prefix、prefixOverrides、suffixO
+`trim`有四个属性：prefix、prefixOverrides、suffix、suffixOverrides，四个属性的作用位置依次是：prefix、prefixOverrides、suffixOverrides、suffix
 
   prefix：前缀，增加一些指定的内容
   prefixOverrides：前缀重写，删除指定的内容
@@ -178,7 +297,25 @@ update user set name='xx',gender='xx' where id='xx'
   update author
     <set>
       <if test="username!=null">username=#{username},</if>
-      <if test="">
+      <if test="password!=null">password=#{password},</if>
+      <if test="email!=null">email=#{email},</if>
+      <if test="bio!=null">bio=#{bio}</if>
+    </set>
+  where id=#{id}
+</update>
+```
+
+set元素会动态前置SET关键字，同时也会删掉无关的逗号。
+
+#### foreach
+
+```xml
+<select id="selectPostIn" resultType="domain.blog.Post">
+  SELECT * FROM post p WHERE id IN
+  <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+    #{item}
+  </foreach>
+</select>
 ```
 
 
@@ -187,3 +324,5 @@ update user set name='xx',gender='xx' where id='xx'
 [Mybatis文档](http://www.mybatis.org/mybatis-3/) - 官方文档写的也是很简陋了
 
 [tk.mybatis项目文档](https://github.com/abel533/Mapper/wiki)
+
+[mybatis-spring-boot-starter文档](http://www.mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/)
